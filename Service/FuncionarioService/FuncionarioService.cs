@@ -73,13 +73,23 @@ namespace WebAPI.Service.FuncionarioService
             return serviceResponse;
         }
 
-        public Task<ServiceResponse<FuncionarioModel>> GetFuncionariosById(int id)
+        public async Task<ServiceResponse<FuncionarioModel>> GetFuncionariosById(int id)
         {
             ServiceResponse<FuncionarioModel> serviceResponse = new ServiceResponse<FuncionarioModel>();
 
             try
             {
                 
+                FuncionarioModel funcionario =  _context.Funcionarios.FirstOrDefault(x => x.Id == id);
+
+                if(funcionario == null) {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Usuario não localizado";
+                    serviceResponse.Sucesso = false;
+                }
+
+                serviceResponse.Dados = funcionario;
+
                 
             }
             catch (Exception ex)
@@ -87,7 +97,8 @@ namespace WebAPI.Service.FuncionarioService
                serviceResponse.Mensagem = ex.Message;
                serviceResponse.Sucesso = false; 
             }
-        
+
+            return serviceResponse;
 
         }
 
