@@ -19,6 +19,7 @@ namespace WebAPI.Controllers
         {
             _funcionarioInterface = funcionarioInterface;
         }
+
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<FuncionarioModel>>>> GetFuncionarios()
         {
@@ -26,5 +27,11 @@ namespace WebAPI.Controllers
 
 
         }
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<List<FuncionarioModel>>>> CreateFuncionarios(FuncionarioModel novoFuncionario)
+        {
+            return Ok(await _funcionarioInterface.CreateFuncionarios(novoFuncionario));
+        }
+    
     }
 }
