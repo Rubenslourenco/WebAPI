@@ -39,6 +39,13 @@ namespace WebAPI.Controllers
         {
             return Ok(await _funcionarioInterface.CreateFuncionarios(novoFuncionario));
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ServiceResponse<List<FuncionarioModel>>>> InativarFuncionarios(int id)
+        { 
+          ServiceResponse<List<FuncionarioModel>> serviceResponse = await _funcionarioInterface.InativarFuncionarios(id);
+          return Ok(serviceResponse);  
+        }
     
     }
 }
