@@ -48,9 +48,33 @@ namespace WebAPI.Service.FuncionarioService
            return serviceResponse;
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionarios(int id)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionarios(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> serviceResponse = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+                FuncionarioModel funcionario = _context.Funcionarios.FirstOrDefault(x => x.Id == id);
+
+                if(funcionario == null) {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Informe os dados";
+                    serviceResponse.Sucesso = false;
+                }
+
+                _context.Funcionarios.Remove(funcionario);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Dados = _context.Funcionarios.ToList();
+            }
+            catch (Exception Ex)
+            {
+                serviceResponse.Mensagem = Ex.Message;
+                serviceResponse.Sucesso = false;    
+            
+            }
+
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<List<FuncionarioModel>>> GetFuncionarios()
