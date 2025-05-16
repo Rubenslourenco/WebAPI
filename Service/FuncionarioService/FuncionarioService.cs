@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.DataContext;
 using WebAPI.Models;
 
@@ -134,9 +135,34 @@ namespace WebAPI.Service.FuncionarioService
             return serviceResponse;
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionarios(FuncionarioModel editarFuncionario)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionarios(FuncionarioModel editarFuncionario)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> serviceResponse = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+                FuncionarioModel funcionario = _context.Funcionarios.AsNoTracking().FirstOrDefault(x => x.Id == editarFuncionario.Id);
+
+                 if(funcionario == null) {
+                    serviceResponse.Dados = null;
+                    serviceResponse.Mensagem = "Usuario nao localizado";
+                    serviceResponse.Sucesso = false;
+                }     
+
+                funcionario.DataDeAlteracao = DateTime.Now.ToLocalTime();
+                _context.Funcionarios.Update(editarFuncionario);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Dados = _context.Funcionarios.ToList();
+                
+            }
+            catch (Exception ex)
+            {
+                
+                serviceResponse.Mensagem = ex.Message;
+                serviceResponse.Sucesso = false;
+            }
+            return serviceResponse;
         }
     }
 }
